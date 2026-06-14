@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Health Survey & Safe Fruit Guide</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #f1f8e9;
+            --text-color: #333333;
+            --card-background: #ffffff;
+            --border-color: #cccccc;
+            --accent-color: #ff9800;
+            --danger-color: #d32f2f;
+            --water-color: #0288d1;
+            --fruit-color: #ef6c00;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .survey-container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+        }
+
+        header h1 { color: var(--primary-color); font-size: 1.8rem; margin-bottom: 10px; }
+
+        .form-section { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        select, input[type="number"] {
+            width: 100%; padding: 11px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; background-color: #fafafa;
+        }
+
+        .lang-box {
+            background: #e8f5e9; padding: 15px; border-radius: 8px; border: 1px solid #c8e6c9; margin-bottom: 20px;
+        }
+
+        button[type="submit"] {
+            display: block; width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 14px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px;
+        }
+        button[type="submit"]:hover { background-color: #1b5e20; }
+
+        .tips-box {
+            display: none; margin-top: 25px; padding: 20px; background-color: #fffde7; border-left: 6px solid var(--accent-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .tips-box h4 { color: #e65100; margin-bottom: 15px; font-size: 1.3rem; border-bottom: 1px dashed #ffe082; padding-bottom: 5px;}
+        .time-row { margin-bottom: 12px; font-size: 1rem; }
+        .time-tag { font-weight: bold; color: var(--primary-color); display: inline-block; width: 110px; }
+
+        /* Custom Fruit Guidance Box Styling */
+        .fruit-guidance-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff3e0;
+            border-left: 6px solid var(--fruit-color);
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .fruit-guidance-box h5 { color: var(--fruit-color); font-size: 1.1rem; margin-bottom: 6px; }
+
+        .lifestyle-targets-box {
+            margin-top: 15px; padding: 15px; background-color: #e1f5fe; border-left: 6px solid var(--water-color); border-radius: 6px; margin-bottom: 15px;
+        }
+        .lifestyle-targets-box h5 { color: var(--water-color); font-size: 1.1rem; margin-bottom: 8px; }
+
+        .junk-warning-box {
+            margin-top: 20px; padding: 15px; background-color: #ffebee; border-left: 6px solid var(--danger-color); border-radius: 6px;
+        }
+        .junk-warning-box h5 { color: var(--danger-color); font-size: 1.1rem; margin-bottom: 8px; }
+        .junk-warning-box ul { padding-left: 20px; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <div class="survey-container">
+        <header>
+            <h1>Community Health & Lifestyle Survey</h1>
+            <p>Fill out the survey to receive personalized food lists, fruit compatibility guides, and life targets!</p>
+        </header>
+
+        <div class="lang-box">
+            <label for="languageSelect" style="color: var(--primary-color);">🌐 Choose Language / మీ భాషను ఎంచుకోండి / अपनी भाषा चुनें:</label>
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="hi">हिंदी (Hindi)</option>
+            </select>
+        </div>
+
+        <form id="nutritionSurvey" onsubmit="handleSubmit(event)">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="ageGroup">1. What is your age group?</label>
+                    <select id="ageGroup" required>
+                        <option value="" disabled selected>Select your age group</option>
+                        <option value="Under 18">Under 18</option>
+                        <option value="18-24">18 - 24</option>
+                        <option value="25-44">25 - 44</option>
+                        <option value="45-64">45 - 64</option>
+                        <option value="65+">65 or older</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="workHours">2. How many hours do you work daily?</label>
+                    <input type="number" id="workHours" min="0" max="24" placeholder="e.g., 8" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eatFruits">3. Do you eat fruits daily?</label>
+                    <select id="eatFruits" required>
+                        <option value="" disabled selected>Select Yes or No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="waterIntake">4. How much water do you drink per day?</label>
+                    <select id="waterIntake" required>
+                        <option value="" disabled selected>Select an option</option>
+                        <option value="2L">2 Liters (2L)</option>
+                        <option value="3L">3 Liters (3L)</option>
+                        <option value="4L">4 Liters (4L)</option>
+                        <option value="5L and more">5 Liters and more (5L+)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sleepHours">5. How many hours do you sleep per day?</label>
+                    <input type="number" id="sleepHours" min="0" max="24" placeholder="e.g., 7" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="healthIssue">6. Do you have any existing health issues?</label>
+                    <select id="healthIssue" required>
+                        <option value="None">None (Healthy Plan)</option>
+                        <option value="Sugar">Sugar / Diabetes</option>
+                        <option value="BP">High Blood Pressure (BP)</option>
+                        <option value="Thyroid">Thyroid</option>
+                        <option value="Gastric">Gastric / Acidity Issues</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Submit & View My Personalized Advice</button>
+        </form>
+
+        <div id="healthTipsBox" class="tips-box">
+            <h4 id="tipsTitle">Healthy Daily Food Items</h4>
+            
+            <div id="lifestyleSection"></div>
+
+            <div id="fruitGuidanceSection"></div>
+
+            <div id="tipsContent"></div>
+            <div id="junkFoodSection"></div>
+        </div>
+    </div>
+
+    <script>
+        // Paste your Google Web App URL between the quotes below:
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzTh92jKtk4zT7t0zl1oQgQu8PxtzYP-KxIdJ408VDZVSrahza6Lf7IcUkoX3xaY8Vm/exec";
+
+        // MEDICAL CONDITIONS FRUIT TARGETS (Drawn dynamically based on user health choices)
+        const fruitGuidanceDatabase = {
+            "None": {
+                en: { eat: "All seasonal fruits are healthy! Eat Apples, Bananas, Papayas, Watermelons, Pomegranates, and Guavas daily.", avoid: "No restrictions. Avoid eating cut fruits left open in public markets." },
+                te: { eat: "అన్ని రకాల పండ్లు ఆరోగ్యకరమైనవే! ఆపిల్, అరటిపండు, బొప్పాయి, పుచ్చకాయ, దానిమ్మ, మరియు జామపండ్లను రోజూ తినవచ్చు.", avoid: "ఎలాంటి నిరోధాలు లేవు. మార్కెట్లో ఎక్కువ సేపు కట్ చేసి బయట పెట్టిన పండ్లను తినవద్దు." },
+                hi: { eat: "सभी मौसमी फल स्वास्थ्यवर्धक हैं! सेब, केला, पपीता, तरबूज, अनार और अमरूद रोज खाएं।", avoid: "कोई प्रतिबंध नहीं है। बाजार में खुले कटे हुए फलों को खाने से बचें।" }
+            },
+            "Sugar": {
+                en: { eat: "Guava (Jamapandu), Jamun (Neredu), Green Apples, Papaya. These contain low sugar and natural fiber.", avoid: "Strictly avoid Mangoes, Grapes, Custard Apples (Seethaphal), and Sapota. They spike blood sugar instantly." },
+                te: { eat: "జామపండు, నేరేడు పండు, పచ్చని ఆపిల్స్, బొప్పాయి. వీటిలో చక్కెర తక్కువగా ఉండి పీచుపదార్థం ఎక్కువగా ఉంటుంది.", avoid: "మామిడి పండ్లు, ద్రాక్ష, సీతాఫలం, మరియు సపోటా అస్సలు తినవద్దు. ఇవి షుగర్ లెవెల్స్‌ను వెంటనే పెంచుతాయి." },
+                hi: { eat: "अमरूद, जामुन, हरा सेब, और पपीता। इनमें चीनी कम होती है और फाइबर अधिक होता है जो शुगर नियंत्रित रखता है।", avoid: "आम, अंगूर, सीताफल, और चीकू (सपोटा) खाने से पूरी तरह बचें। ये खून में शुगर की मात्रा तुरंत बढ़ाते हैं।" }
+            },
+            "BP": {
+                en: { eat: "Bananas, Watermelon, Oranges, Pomegranates. They are rich in potassium which lowers blood pressure.", avoid: "Avoid preserved fruit juices or canned fruits containing artificial sodium and chemical salts." },
+                te: { eat: "అరటిపండ్లు, పుచ్చకాయ, నారింజ/బత్తాయి, దానిమ్మ. వీటిలో పొటాషియం ఎక్కువగా ఉండి బీపీని తగ్గిస్తుంది.", avoid: "నిల్వ ఉంచిన పండ్ల రసాలు (ప్యాకెట్ జ్యూస్) లేదా ప్రిజర్వేటివ్స్ ఉన్న డబ్బా పండ్లను తినకూడదు." },
+                hi: { eat: "केला, तरबूज, संतरा, और अनार। इनमें पोटैशियम भरपूर मात्रा में होता है जो हाई बीपी को कम करने में मदद करता है।", avoid: "डिब्बाबंद फ्रूट जूस या केमिकल सॉल्ट वाले डिब्बाबंद फलों से पूरी तरह दूर रहें।" }
+            },
+            "Thyroid": {
+                en: { eat: "Apples, Berries, Oranges, Avocados, and Pineapple. They contain zinc and selenium which improve thyroid health.", avoid: "Avoid unwashed raw fruits or excessive consumption of highly processed sweet fruit syrups." },
+                te: { eat: "ఆపిల్, బెర్రీలు, నారింజ, మరియు అనాస పండు (పైpineapple). ఇవి థైరాయిడ్ గ్రంధి పనితీరును మెరుగుపరుస్తాయి.", avoid: "సరిగ్గా కడగని పండ్లు మరియు కృత్రిమంగా తయారుచేసిన తీపి ఫ్రూట్ సిరప్‌లను తీసుకోకూడదు." },
+                hi: { eat: "सेब, जामुन/बेरीज, संतरा, और अनानास। इनमें जिंक और सेलेनियम होता है जो थायराइड ग्रंथि को संतुलित रखता है।", avoid: "बिना धुले फल और फैक्ट्रियों में बने मीठे फ्रूट सिरप का सेवन न करें।" }
+            },
+            "Gastric": {
+                en: { b: "Papaya, Bananas, Melons. These fruits are alkaline and soothe stomach acid linings.", avoid: "Strictly avoid Oranges, Lemons, Sweet Limes (Mosambi), and Pineapples. Highly acidic fruits cause severe stomach burning." },
+                te: { eat: "బొప్పాయి, అరటిపండ్లు, పుచ్చకాయ. ఈ పండ్లు కడుపులో మంటను తగ్గించి జీర్ణక్రియను సులభతరం చేస్తాయి.", avoid: "నారింజ, నిమ్మకాయ, బత్తాయి, మరియు అనాస పండు (పైpineapple) అస్సలు తినవద్దు. ఇవి కడుపులో యాసిడ్లను పెంచి మంటను కలిగిస్తాయి." },
+                hi: { eat: "पपीता, केला, और खरबूजा/तरबूज। ये फल पेट को ठंडक पहुंचाते हैं और एसिडिटी को शांत करते हैं।", avoid: "संतरा, नींबू, मौसंबी, और अनानास खाने से बचें। अत्यधिक खट्टे फल पेट में तेजाब और जलन बढ़ाते हैं।" }
+            }
+        };
+
+        const lifestyleDatabase = {
+            "Under 18": {
+                en: { water: "2L to 3L per day (Essential for high metabolism and growth activity).", sleep: "8 to 10 hours per day (Crucial for physical development and brain recovery)." },
+                te: { water: "రోజుకు 2 నుండి 3 లీటర్లు (శరీర ఎదుగుదలకు మరియు జీర్ణక్రియకు చాలా అవసరం).", sleep: "రోజుకు 8 నుండి 10 గంటలు (శరీర వికాసానికి మరియు మెదడు చురుకుదనానికి ముఖ్యం)." },
+                hi: { water: "2 से 3限制 लीटर प्रतिदिन (शारीरिक विकास और मेटाबॉलिज्म के लिए बहुत जरूरी है)।", sleep: "8 से 10 घंटे प्रतिदिन (शारीरिक वृद्धि और मानसिक स्वास्थ्य के लिए आवश्यक)।" }
+            },
+            "18-24": {
+                en: { water: "3L to 4L per day (Keeps energy high and flushes toxins during long study/work hours).", sleep: "7 to 9 hours per day (Maintains focus, memory, and reduces high daily stress)." },
+                te: { water: "రోజుకు 3 నుండి 4 లీటర్లు (శరీరానికి शक्तिని ఇస్తుంది మరియు వ్యర్థాలను తొలగిస్తుంది).", sleep: "రోజుకు 7 నుండి 9 గంటలు (ఏకాగ్రత పెంచడానికి మరియు ఒత్తిడిని తగ్గించడానికి అవసరం)." },
+                hi: { water: "3 से 4 लीटर प्रतिदिन (ऊर्जा बनाए रखने और शरीर से हानिकारक तत्वों को बाहर निकालने के लिए)।", sleep: "7 से 9 घंटे प्रतिदिन (तनाव कम करने और ध्यान केंद्रित करने के लिए जरूरी)।" }
+            },
+            "25-44": {
+                en: { water: "3L to 4L per day (Protects joint lubrication and helps control sudden food cravings).", sleep: "7 to 8 hours per day (Vital for maintaining standard metabolism and cellular repair)." },
+                te: { water: "రోజుకు 3 నుండి 4 లీటర్లు (కీళ్ల నొప్పులు రాకుండా కాపాడుతుంది మరియు బరువును అదుపులో ఉంచుతుంది).", sleep: "రోజుకు 7 నుండి 8 గంటలు (జీవక్రియ సజావుగా సాగడానికి మరియు అలసట తగ్గడానికి అవసరం)." },
+                hi: { water: "3 से 4 लीटर प्रतिदिन (जोड़ों को स्वस्थ रखने और अचानक भूख लगने की आदत को नियंत्रित करने के लिए)।", sleep: "7 से 8 घंटे प्रतिदिन (मेटाबॉलिज्म को ठीक रखने और शरीर की मरम्मत के लिए)।" }
+            },
+            "45-64": {
+                en: { water: "2.5L to 3.5L per day (Supports kidney health and processes balanced blood pressure).", sleep: "7 to 8 hours per day (Protects long-term cardiovascular and heart performance)." },
+                te: { water: "రోజుకు 2.5 నుండి 3.5 లీటర్లు (కిడ్నీల ఆరోగ్యానికి మరియు రక్తపోటును అదుపులో ఉంచడానికి సహాయపడుతుంది).", sleep: "రోజుకు 7 నుండి 8 గంటలు (గుండె ఆరోగ్యాన్ని కాపాడటానికి మరియు నిరంతర అలసటను దూరం చేయడానికి ముఖ్యం)." },
+                hi: { water: "2.5 से 3.5 लीटर प्रतिदिन (किडनी को स्वस्थ रखने और ब्लड प्रेशर को नियंत्रित करने में सहायक)।", sleep: "7 से 8 घंटे प्रतिदिन (दिल की सेहत दुरुस्त रखने और लंबी उम्र के लिए ज़रूरी)।" }
+            },
+            "65+": {
+                en: { water: "2L to 2.5L per day (Drink in small intervals even if not explicitly thirsty to prevent dizziness).", sleep: "7 hours per day (Improves immune defenses and prevents early morning fatigue)." },
+                te: { water: "రోజుకు 2 నుండి 2.5 లీటర్లు (దాహం వేయకపోయినా కొద్దికొద్దిగా తాగుతూ ఉండాలి, తలతిరగడం తగ్గుతుంది).", sleep: "రోజుకు 7 గంటలు (రోగనిరోధక శక్తిని పెంచడానికి మరియు ఉదయం అలసట లేకుండా ఉండటానికి అవసరం)." },
+                hi: { water: "2 से 2.5 लीटर प्रतिदिन (प्यास न लगने पर भी थोड़े-थोड़े समय में पानी पीते रहें ताकि कमजोरी न आए)।", sleep: "7 घंटे प्रतिदिन (रोग प्रतिरोधक क्षमता बढ़ाने और सुबह की थकान से बचने के लिए आवश्यक)।" }
+            }
+        };
+
+        const healthConditionPlans = {
+            "Sugar": {
+                en: { b: "Oats porridge or Methi paratha (No sugar).", l: "Brown rice/Jowar roti, lots of green leafy vegetables, bitter gourd, whole dal.", s: "Roasted chana or chia seed water. Avoid sweet juices.", d: "1 Wheat chapati with cooked vegetable curry. Strictly no white potato." },
+                te: { b: "ఓట్స్ జావ లేదా మెంతుల చపాతీ (చక్కెర అస్సలు వద్దు).", l: "బ్రౌన్ రైస్ లేదా జొన్న రొట్టె, ఆకుకూరలు, కాకరకాయ కూర, పప్పు.", s: "వేయించిన శనగలు లేదా సబ్జా గింజల నీరు. తీపి జ్యూస్‌లు తాగవద్దు.", d: "1 గోధుమ చపాతీ మరియు వండిన వెజిటబుల్ కూర. బంగాళాదుంపలు తినవద్దు." },
+                hi: { b: "ओट्स दलिया या मेथी पराठा (बिना चीनी)।", l: "ब्राउन राइस या ज्वार की रोटी, हरी पत्तेदार सब्जियां, करेला, दाल।", s: "भुने हुए चने या चिया सीड्स का पानी। मीठे जूस से बचें।", d: "1 कूं की चपाती और पकी हुई सब्जी। आलू खाने से पूरी तरह बचें।" }
+            },
+            "BP": {
+                en: { b: "Unsalted oatmeal, skimmed milk, or ripe bananas.", l: "2 light rotis, ridge gourd or bottle gourd curry, unsalted curd. Low salt overall.", s: "Coconut water or a handful of unsalted walnuts and pumpkin seeds.", d: "Vegetable soup and boiled moong dal. Avoid pickles and papad completely." },
+                te: { b: "ఉప్పు లేని ఓట్స్ జావ, వెన్న తీసిన పాలు, లేదా అరటిపండ్లు.", l: "2 పల్చటి రొట్టెలు, బీరకాయ లేదా సొరకాయ కూర, ఉప్పు లేని పెరుగు. తక్కువ ఉప్పు వాడాలి.", s: "కొబ్బరి నీళ్లు లేదా ఉప్పు లేని వాల్‌నట్స్ మరియు గుమ్మడికాయ గింజలు.", d: "వెజిటబుల్ సూప్ మరియు ఉడికించిన పెసరపప్పు. పచ్చళ్ళు, అప్పడాలు అస్సలు ముట్టవద్దు." },
+                hi: { b: "बिना नमक का ओट्स, टोंड दूध, या केला। लंच: 2 हल्की रोटी, तोरई या लौकी की सब्जी, बिना नमक का दही। नमक बहुत कम रखें।", s: "नारियल पानी या बिना नमक के अखरोट और कद्दू के बीज।", d: "सब्जियों का सूप और उबली हुई मूंग दाल। अचार और पापड़ से पूरी तरह दूर रहें।" }
+            },
+            "Thyroid": {
+                en: { b: "Boiled eggs, upma, or tracking Brazil nuts/Almonds.", l: "White/Brown rice, chicken curry or dal, curd. Avoid raw cabbage and cauliflower.", s: "A fresh apple or pear with warm lemon water.", d: "Vegetable khichdi or vegetable broth with grilled paneer." },
+                te: { b: "ఉడికించిన గుడ్లు, ఉప్మా, లేదా బాదం పప్పులు.", l: "అన్నం, చికెన్ కూర లేదా పప్పు, పెరుగు. పచ్చి క్యాబేజీ, క్యాలీఫ్లవర్ తినకూడదు.", s: "తాజా ఆపిల్ లేదా జామపండు మరియు గోరువెచ్చని నిమ్మకాయ నీరు.", d: "వెజిటబుల్ కిచిడీ లేదా పనీర్ ముక్కలతో చేసిన వెజిటబుల్ సూప్." },
+                hi: { b: "उबले अंडे, उपमा, या बादाम।", l: "चावल, चिकन करी या दाल, दही। कच्ची बंदगोभी और फूलगोभी खाने से बचें।", s: "ताजा सेब या नाशपाती और गुनगुना नींबू पानी।", d: "वेजिटेबल खिचड़ी या पनीर के साथ सब्जियों का सूप।" }
+            },
+            "Gastric": {
+                en: { b: "Soft idli, cold milk, or soft banana. No spicy chutneys.", l: "Soft white rice with thin yellow moong dal and boiled bottle gourd. No red chili.", s: "Cool coconut water or fresh aloe vera/mint juice.", d: "Mashed rice porridge or warm barley soup. Eat 2 hours before sleeping." },
+                te: { b: "మెత్తటి ఇడ్లీ, చల్లని పాలు, లేదా అరటిపండు. కారంగా ఉండే చట్నీలు వద్దు.", l: "మెత్తటి అన్నం, పల్చటి పెసరపప్పు మరియు ఉడికించిన సొరకాయ. కారం తగ్గించాలి.", s: "చల్లని కొబ్బరి నీళ్లు లేదా తాజా పుదీనా రసం.", d: "మెత్తటి అన్నం జావ లేదా బార్లీ సూప్. పడుకోవడానికి 2 గంటల ముందే తినాలి." },
+                hi: { b: "नरम इडली, ठंडा दूध, या केला। तीखी चटनी का प्रयोग न करें।", l: "नरम सफेद चावल, पतली मूंग दाल और उबली हुई लौकी। लाल मिर्च बिल्कुल बंद।", s: "ठंडा नारियल पानी या ताजा पुदीने का रस।", d: "नरम चावल का दलिया या जौ का सूप। सोने से 2 घंटे पहले भोजन करें।" }
+            }
+        };
+
+        const healthyFoodDatabase = {
+            "Under 18": {
+                en: { b: "Milk, Ragi malt, Whole wheat bread, Boiled eggs, Bananas", l: "Rice, Dal, Spinach curry, Curd, Paneer cubes", s: "Roasted Chana, Apples, Guavas, Peanut chikki", d: "Soft wheat rotis, Mixed vegetable curry, Cucumber salad" },
+                te: { b: "పాలు, రాగి జావ, గోధుమ రొట్టె, ఉడికించిన గుడ్లు, అరటిపండ్లు", l: "అన్నం, పప్పు, తోటకూర పప్పు, పెరుగు, పనీర్ ముక్కలు", s: "వేయించిన శనగలు, ఆపిల్ పండ్లు, జామపండ్లు, పల్లీ పట్టీ", d: "మెత్తటి గోధుమ చపాతీలు, వెజిటబుల్ కూర, కీరదోసకాయ ముక్కలు" },
+                hi: { b: "दूध, रागी माल्ट, गेहूं की रोटी, उबले अंडे, केला", l: "चावल, दाल, पालक की सब्जी, दही, पनीर", s: "भुने हुए चने, सेब, अमरूद, मूंगफली की चिक्की", d: "नरम गेहूं की रोटी, मिक्स वेज सब्जी, खीरे का सलाद" }
+            },
+            "18-24": {
+                en: { b: "Oatmeal, Vegetable upma, Sprouts, Soaked almonds", l: "Rice/Rotis, Fish/Chicken curry or Soya chunks, Dal", s: "Green tea, Low-fat buttermilk, Roasted makhana, Oranges", d: "Wheat chapati, Moong dal khichdi, Boiled green vegetables" },
+                te: { b: "ఓట్స్, వెజిటబుల్ ఉప్మా, మొలకెత్తిన గింజలు, నానబెట్టిన బాదం పప్పులు", l: "అన్నం/రొట్టెలు, చేపలు/చికెన్ లేదా సోయా కూర, పప్పు", s: "గ్రీన్ టీ, పల్చటి మజ్జిగ, వేయించిన తామర గింజలు (మఖానా), నారింజ", d: "చపాతీ, పెసరపప్పు కిచిడీ, ఉడికించిన పచ్చని ఆకుకూరలు" },
+                hi: { b: "ओट्स, वेज उपमा, अंकुरित अनाज, भीगे हुए बादाम", l: "चावल/रोटी, मछली/चिकन या सोया बड़ी, दाल", s: "ग्रीन टी, छाछ, भुने हुए मखाने, संतरा", d: "गेहूं की चपाती, मूंग दाल की खिचड़ी, उबली हुई हरी सब्जियां" }
+            },
+            "25-44": {
+                en: { b: "Moong dal chilla, Idli with mint chutney, Whole grain porridge", l: "Limited rice, Multi-grain rotis, Green vegetables, Bitter gourd, Thick curd", s: "Walnuts, Flaxseeds, Coconut water, Papaya slices", d: "Clear vegetable soup, 1 light chapati, Grilled paneer salad" },
+                te: { b: "పెసరట్టు, పుదీనా చట్నీతో ఇడ్లీ, మల్టీగ్రెయిన్ జావ", l: "కొద్దిగా అన్నం, జొన్న/గోధుమ రొట్టెలు, పచ్చని కూరగాయలు, కాకరకాయ కూర, గట్టి పెరుగు", s: "వాల్‌నట్స్, అవిసె గింజలు, కొబ్బరి నీళ్లు, బొప్పాయి ముక్కలు", d: "వెజిటబుల్ సూప్, 1 చపాతీ, పనీర్ ముక్కల సలాడ్" },
+                hi: { b: "मूंग दाल का चीला, पुदीने की चटनी के साथ इडली, दलिया", l: "सीमित चावल, मटीग्रेन रोटी, हरी सब्जियां, करेले की सब्जी, गाढ़ा दही", s: "अखरोट, अलसी के बीज, नारियल पानी, पपीता", d: "सब्जियों का सूप, 1 हल्की चपाती, पनीर सलाद" }
+            },
+            "45-64": {
+                en: { b: "Oats porridge, Barley malt, Soft idli with light sambar", l: "Jowar rotis, Ridge gourd curry, Light moong dal, Low-fat curd", s: "Warm cumin water, Puffed rice, Pomegranate seeds", d: "Bottle gourd khichdi, Mashed vegetable broth" },
+                te: { b: "ఓట్స్ జావ, బార్లీ మాల్ట్, సాంబార్‌తో మెత్తటి ఇడ్లీ", l: "జొన్న రొట్టెలు, బీరకాయ కూర, లేత పెసరపప్పు, వెన్న తీసిన మజ్జిగ/పెరుగు", s: "వెచ్చని జీలకర్ర నీరు, బొరుగులు, దానిమ్మ గింజలు", d: "సొరకాయ కిచిడీ, మెత్తటి వెజిటబుల్ సూప్" },
+                hi: { b: "ओट्स दलिया, जौ का माल्ट, सांभर के साथ नरम इडली", l: "ज्वार की रोटी, तोरई की सब्जी, मूंग दाल, कम फैट वाला दही", s: "गुनगुना जीरा पानी, मुरमुरे, अनार के दाने", d: "लौकी की खिचड़ी, सब्जियों का सूप" }
+            },
+            "65+": {
+                en: { b: "Mashed oatmeal with hot milk, Soft ragi malt, Ripe soft banana", l: "Soft white rice, Mashed yellow moong dal, Stewed soft vegetables", s: "Warm herbal water, Soft paneer cubes, Mashed papaya", d: "Mashed rice-milk mixture, Light vegetable warm broth" },
+                te: { b: "వేడి పాలలో మెత్తగా ఉడికించిన ఓట్స్, రాగి జావ, బాగా పండిన అరటిపండు", l: "మెత్తటి అన్నం, ముద్ద పెసరపప్పు, బాగా ఉడికించిన మెత్తని కూరగాయలు", s: "వెచ్చని వాము నీరు, మెత్తటి పనీర్ ముక్కలు, బొప్పాయి గుజ్జు", d: "మెత్తటి పాల అన్నం, తేలికపాటి కూరగాయల సూప్" },
+                hi: { b: "दूध के साथ मैश किया हुआ ओट्स, रागी माल्ट, पका हुआ नरम केला", l: "नरम चावल, घुटी हुई मूंग दाल, अच्छी तरह उबली हुई नरम सब्जियां", s: "गुनगुना अजवाइन का पानी, नरम पनीर, मैश किया हुआ पपीता", d: "नरम दूध-चावल, हल्का और गर्म सब्जियों का सूप" }
+            }
+        };
+
+        const junkFoodInfo = {
+            en: { title: "⚠️ CRITICAL HEALTH WARNING: STOP JUNK FOOD", intro: "Do not eat fast foods, fried items, bakery goods, and sugary sodas! Here are the harmful effects of regular junk food consumption:", causes: ["Causes rapid weight gain and obesity.", "Increases the risk of type-2 diabetes and high blood pressure.", "Leads to heart damage due to unhealthy fats and high salt.", "Destroys digestion, causing stomach bloating and low daily energy."] },
+            te: { title: "⚠️ ఆరోగ్య హెచ్చరిక: జంక్ ఫుడ్ తినడం ఆపండి", intro: "బేకరీ తిండ్లు, నూనెలో వేయించిన సమోసాలు, బర్గర్లు, మరియు కూల్‌డ్రింక్స్ అస్సలు తినవద్దు! జంక్ ఫుడ్ తినడం వల్ల కలిగే నష్టాలు ఇవే:", causes: ["శరీర బరువు విపరీతంగా పెరిగి ఊబకాయం వస్తుంది.", "చిన్న వయస్సులోనే డయాబెటిస్ (షుగర్ వ్యాధి) మరియు బీపీ వచ్చే అవకాశం పెరుగుతుంది.", "ఎక్కువ ఉప్పు మరియు చెడు కొవ్వుల వల్ల గుండె జబ్బులు వస్తాయి.", "జీర్ణక్రియ పాడైపోయి, కడుపు ఉబ్బరం మరియు నీరసం వస్తుంది."] },
+            hi: { title: "⚠️ स्वास्थ्य चेतावनी: जंक फूड खाना बंद करें", intro: "तली-भुनी चीजें, समोसे, बर्गर, पिज्जा और कोल्ड-ड्रिंक्स खाना बिल्कुल बंद करें! जंक फूड खाने के नुकसान निम्नलिखित हैं:", causes: ["तेजी से वजन बढ़ता है और मोटापा आता है।", "कम उम्र में ही डायबिटीज (शुगर) और हाई ब्लड प्रेशर का खतरा बढ़ जाता है।", "ज्यादा नमक और खराब फैट के कारण दिल की बीमारियां होती हैं।", "पाचन तंत्र खराब हो जाता है, जिससे पेट फूलना और कमजोरी महसूस होती है।"] }
+        };
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            submitBtn.innerText = "Processing...";
+            submitBtn.disabled = true;
+
+            const ageGroup = document.getElementById("ageGroup").value;
+            const workHours = document.getElementById("workHours").value;
+            const eatFruits = document.getElementById("eatFruits").value;
+            const waterIntake = document.getElementById("waterIntake").value;
+            const sleepHours = document.getElementById("sleepHours").value;
+            const healthIssue = document.getElementById("healthIssue").value;
+            const selectedLang = document.getElementById("languageSelect").value;
+            
+            const formData = {
+                ageGroup: ageGroup,
+                workHours: workHours,
+                eatFruits: eatFruits,
+                waterIntake: waterIntake,
+                sleepHours: sleepHours,
+                healthIssue: healthIssue
+            };
+
+            // Inject lifestyle targets data 
+            const lifestyle = lifestyleDatabase[ageGroup][selectedLang];
+            const sectionTitles = { en: "Targeted Water & Sleep Recommendations", te: "నీరు మరియు నిద్రకు సంబంధించిన లక్ష్యాలు", hi: "पानी और नींद के लिए अनुशंसित लक्ष्य" };
+            const labels = { en: ["Water Goal", "Sleep Goal"], te: ["నీటి లక్ష్యం", "నిద్ర లక్ష్యం"], hi: ["पानी का लक्ष्य", "नींद का लक्ष्य"] };
+
+            document.getElementById("lifestyleSection").innerHTML = `
+                <div class="lifestyle-targets-box">
+                    <h5>💧 ${sectionTitles[selectedLang]} (${ageGroup})</h5>
+                    <div style="font-size: 0.95rem; margin-top: 5px;"><strong>🔵 ${labels[selectedLang][0]}:</strong> ${lifestyle.water}</div>
+                    <div style="font-size: 0.95rem; margin-top: 5px;"><strong>😴 ${labels[selectedLang][1]}:</strong> ${lifestyle.sleep}</div>
+                </div>
+            `;
+
+            // INJECT DYNAMIC SAFEST FRUITS INFORMATION
+            const fruits = fruitGuidanceDatabase[healthIssue][selectedLang];
+            const fruitHeadings = { en: "Fruit Compatibility Guide", te: "పండ్ల వినియోగ మార్గదర్శకాలు", hi: "फलों के सेवन के नियम" };
+            const subTags = { en: ["✅ Best Fruits to Eat", "❌ Fruits to STRICTLY Avoid"], te: ["✅ తినవలసిన మంచి పండ్లు", "❌ అస్సలు తినకూడని పండ్లు"], hi: ["✅ खाने के लिए सबसे अच्छे फल", "❌ खाने से पूरी तरह बचने वाले फल"] };
+
+            document.getElementById("fruitGuidanceSection").innerHTML = `
+                <div class="fruit-guidance-box">
+                    <h5>🍊 ${fruitHeadings[selectedLang]} (${healthIssue === 'None' ? 'General' : healthIssue})</h5>
+                    <div style="font-size: 0.95rem; margin-top: 5px; color: #1b5e20;"><strong>${subTags[selectedLang][0]}:</strong> ${fruits.eat}</div>
+                    <div style="font-size: 0.95rem; margin-top: 5px; color: #b71c1c;"><strong>${subTags[selectedLang][1]}:</strong> ${fruits.avoid}</div>
+                </div>
+            `;
+
+            // Setup proper food selection display logic
+            let food;
+            let displayTitle = "";
+            const titles = {
+                en: { healthy: "Healthy Daily Food Items", medical: "Medical Dietary Recommendations" },
+                te: { healthy: "సిఫార్సు చేయబడిన రోజువారీ ఆహారం", medical: "వైద్య ఆరోగ్య ఆహార నియమాలు" },
+                hi: { healthy: "अनुशंसित दैनिक भोजन", medical: "चिकित्सीय आहार संबंधी सिफारिशें" }
+            };
+
+            if (healthIssue === "None") {
+                food = healthyFoodDatabase[ageGroup][selectedLang];
+                displayTitle = `${titles[selectedLang].healthy} (${ageGroup})`;
+            } else {
+                food = healthConditionPlans[healthIssue][selectedLang];
+                displayTitle = `${titles[selectedLang].medical} - ${healthIssue} Plan`;
+            }
+
+            const mealLabels = {
+                en: ["Breakfast", "Lunch", "Snack", "Dinner"],
+                te: ["ఉదయపు ఆహారం", "మధ్యాహ్న భోజనం", "సాయంత్రం ఆహారం", "రాత్రి భోజనం"],
+                hi: ["सुबह का नाश्ता", "दोपहर का भोजन", "शाम का नाश्ता", "रात का भोजन"]
+            };
+
+            document.getElementById("tipsTitle").innerText = displayTitle;
+            document.getElementById("tipsContent").innerHTML = `
+                <div class="time-row"><span class="time-tag">🍳 ${mealLabels[selectedLang][0]}:</span> ${food.b}</div>
+                <div class="time-row"><span class="time-tag">🍛 ${mealLabels[selectedLang][1]}:</span> ${food.l}</div>
+                <div class="time-row"><span class="time-tag">🍎 ${mealLabels[selectedLang][2]}:</span> ${food.s}</div>
+                <div class="time-row"><span class="time-tag">🌙 ${mealLabels[selectedLang][3]}:</span> ${food.d}</div>
+            `;
+            
+            const junk = junkFoodInfo[selectedLang];
+            let bulletPoints = "";
+            junk.causes.forEach(cause => { bulletPoints += `<li>${cause}</li>`; });
+            
+            document.getElementById("junkFoodSection").innerHTML = `
+                <div class="junk-warning-box">
+                    <h5>${junk.title}</h5>
+                    <p style="margin-bottom: 8px; font-weight: 500;">${junk.intro}</p>
+                    <ul>${bulletPoints}</ul>
+                </div>
+            `;
+
+            const tipsBox = document.getElementById("healthTipsBox");
+            tipsBox.style.display = "block";
+
+            try {
+                if(BACKEND_URL !== "YOUR_GOOGLE_WEB_APP_URL_HERE") {
+                    await fetch(BACKEND_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(formData)
+                    });
+                }
+            } catch (error) {
+                console.error("Error saving data:", error);
+            } finally {
+                document.getElementById("nutritionSurvey").reset();
+                submitBtn.innerText = "Submit & View My Personalized Advice";
+                submitBtn.disabled = false;
+                tipsBox.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+
+</body>
+</html>
